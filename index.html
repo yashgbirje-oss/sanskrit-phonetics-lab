@@ -33,18 +33,17 @@
             border-radius: 6px;
             margin-bottom: 20px;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 12px;
-            min-width: 500px;
+            min-width: 400px;
         }
         th, td {
             border: 1px solid #ccc;
-            padding: 8px 4px;
+            padding: 6px;
             text-align: center;
         }
         th {
@@ -55,13 +54,12 @@
             background: #3498db;
             color: white;
             border: none;
-            padding: 6px 10px;
+            padding: 4px 8px;
             font-size: 11px;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 4px;
             margin-right: 2px;
-            min-width: 65px;
         }
         .tts-btn:active {
             background: #2980b9;
@@ -74,6 +72,10 @@
             font-size: 13px;
             line-height: 1.5;
         }
+        .analysis-box ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
         .controls {
             text-align: center;
             margin: 15px 0;
@@ -82,21 +84,15 @@
             background: #27ae60;
             color: white;
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            max-width: 300px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 280px;
         }
         button.main-btn.stop {
             background: #c0392b;
-        }
-        button.main-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
         }
         canvas {
             display: block;
@@ -111,14 +107,7 @@
             text-align: center;
             font-weight: bold;
             color: #e67e22;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        #deviceNote {
-            text-align: center;
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-bottom: 8px;
+            font-size: 13px;
         }
         .transcription-box {
             background: #e8f8f5;
@@ -133,12 +122,11 @@
         .phonetic-breakdown {
             background: #fff;
             border: 1px dashed #1abc9c;
-            padding: 12px;
-            margin-top: 12px;
+            padding: 10px;
+            margin-top: 10px;
             font-size: 14px;
             text-align: left;
             border-radius: 4px;
-            line-height: 1.6;
         }
         .phonetic-breakdown span.category {
             color: #2980b9;
@@ -155,7 +143,7 @@
 
 <div class="container">
     <h1>Sanskrit Phonetic & Acoustic Experiment Lab</h1>
-
+    
     <div class="analysis-box">
         <b>Systematic Organization Analysis:</b> Sanskrit sounds are systematically organized according to their articulation patterns and phonetic properties. This organization supports pronunciation training, language learning, and provides a structured phonetic foundation for speech-processing applications.
     </div>
@@ -306,38 +294,39 @@
 
     <!-- Speech Processing Waveform Section -->
     <h2>3. Speech Processing Application (Live Analyzer)</h2>
-    <p id="deviceNote"></p>
     <p id="status">Status: Idle</p>
+
+    <p id="micStatus" style="text-align:center;font-size:12px;color:#888;min-height:16px;"></p>
 
     <div class="controls">
         <button id="recordBtn" class="main-btn" onclick="toggleRecording()">Start Recording & Analysis</button>
     </div>
-
+    
     <canvas id="waveform" width="500" height="130"></canvas>
 
+    <!-- The New Speech-to-Text & Phonetic Analysis Box -->
     <div class="transcription-box">
         <strong>Live STT Recognition:</strong><br>
         <span id="speechText" style="color: #7f8c8d; font-style: italic;">Press start and speak clearly...</span>
-
+        
         <div class="phonetic-breakdown" id="phoneticBreakdown">
             <em>Phonetic breakdown will appear here...</em>
         </div>
     </div>
 
+    <p style="font-size:11px;color:#999;text-align:center;margin-top:10px;">
+        Note: Live speech recognition requires Chrome or Edge on Android, served over
+        <b>HTTPS</b> (or opened as a localhost page). It is not supported in Safari/iOS,
+        Firefox, or when the file is opened directly from local storage without a secure
+        server.
+    </p>
+
 </div>
 
 <script>
-    // --- 0. DEVICE DETECTION ---
-    // iOS uses WebKit for every browser (Chrome/Firefox/Edge on iOS are all WebKit under the hood),
-    // and WebKit does not implement SpeechRecognition at all. This is an Apple platform limitation,
-    // not something fixable from page code. TTS and the waveform still work fine on iOS.
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const isMobile = isIOS || isAndroid || /Mobi/i.test(navigator.userAgent);
-
-    // --- 1. TEXT TO SPEECH SETUP ---
+    // Text-to-Speech Setup
     let cachedVoices = [];
-
+    
     function refreshVoices() {
         if ('speechSynthesis' in window) {
             const v = window.speechSynthesis.getVoices();
@@ -353,10 +342,10 @@
         if (!('speechSynthesis' in window)) return;
         refreshVoices();
         window.speechSynthesis.cancel();
-
-        let hindiVoice = cachedVoices.find(v => v.lang && v.lang.toLowerCase() === "hi-in") ||
+        
+        let hindiVoice = cachedVoices.find(v => v.lang && v.lang.toLowerCase() === "hi-in") || 
                          cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi"));
-
+        
         const utterance = new SpeechSynthesisUtterance(text);
         if (hindiVoice) {
             utterance.voice = hindiVoice;
@@ -368,10 +357,10 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // --- 2. PHONETIC ANALYSIS ALGORITHM ---
+    // Phonetic Analysis Algorithm
     function analyzePhonetics(text) {
-        if (!text) return;
-
+        if(!text) return;
+        
         let vowels = text.match(/[अआइईउऊऋॠएऐओऔािीुूृेैोौ]/g) || [];
         let guttural = text.match(/[कखगघङ]/g) || [];
         let palatal = text.match(/[चछजझञ]/g) || [];
@@ -384,53 +373,52 @@
         const getUnique = (arr) => [...new Set(arr)].join(', ');
 
         let html = "";
-        if (vowels.length) html += `<span class="category">Swara (Vowels):</span> <span class="sounds">${getUnique(vowels)}</span><br>`;
-        if (guttural.length) html += `<span class="category">Vyanjana - Kanthya (Guttural):</span> <span class="sounds">${getUnique(guttural)}</span><br>`;
-        if (palatal.length) html += `<span class="category">Vyanjana - Talavya (Palatal):</span> <span class="sounds">${getUnique(palatal)}</span><br>`;
-        if (retroflex.length) html += `<span class="category">Vyanjana - Murdhanya (Retroflex):</span> <span class="sounds">${getUnique(retroflex)}</span><br>`;
-        if (dental.length) html += `<span class="category">Vyanjana - Dantya (Dental):</span> <span class="sounds">${getUnique(dental)}</span><br>`;
-        if (labial.length) html += `<span class="category">Vyanjana - Oshthya (Labial):</span> <span class="sounds">${getUnique(labial)}</span><br>`;
-        if (semivowels.length) html += `<span class="category">Antaḥsthā (Semivowels):</span> <span class="sounds">${getUnique(semivowels)}</span><br>`;
-        if (sibilants.length) html += `<span class="category">Ūṣman (Sibilants & Aspirate):</span> <span class="sounds">${getUnique(sibilants)}</span><br>`;
+        if(vowels.length) html += `<span class="category">Swara (Vowels):</span> <span class="sounds">${getUnique(vowels)}</span><br>`;
+        if(guttural.length) html += `<span class="category">Vyanjana - Kanthya (Guttural):</span> <span class="sounds">${getUnique(guttural)}</span><br>`;
+        if(palatal.length) html += `<span class="category">Vyanjana - Talavya (Palatal):</span> <span class="sounds">${getUnique(palatal)}</span><br>`;
+        if(retroflex.length) html += `<span class="category">Vyanjana - Murdhanya (Retroflex):</span> <span class="sounds">${getUnique(retroflex)}</span><br>`;
+        if(dental.length) html += `<span class="category">Vyanjana - Dantya (Dental):</span> <span class="sounds">${getUnique(dental)}</span><br>`;
+        if(labial.length) html += `<span class="category">Vyanjana - Oshthya (Labial):</span> <span class="sounds">${getUnique(labial)}</span><br>`;
+        if(semivowels.length) html += `<span class="category">Antaḥsthā (Semivowels):</span> <span class="sounds">${getUnique(semivowels)}</span><br>`;
+        if(sibilants.length) html += `<span class="category">Ūṣman (Sibilants & Aspirate):</span> <span class="sounds">${getUnique(sibilants)}</span><br>`;
 
-        document.getElementById('phoneticBreakdown').innerHTML = html || "<em>No recognizable Sanskrit/Devanagari sounds found in that phrase — try again.</em>";
+        document.getElementById('phoneticBreakdown').innerHTML = html || "<em>Analyzing phonetic properties...</em>";
     }
 
-    // --- 3. CROSS-PLATFORM SPEECH-TO-TEXT (STT) SETUP ---
-    let recognition = null;
+    let recognition;
     let isRecording = false;
-    let restartTimeout = null;
-    let waveformTimeout = null;
-
-    const deviceNote = document.getElementById('deviceNote');
-    const speechTextEl = document.getElementById('speechText');
-    const recordBtn = document.getElementById('recordBtn');
-    const statusText = document.getElementById('status');
+    let recognitionActive = false;
+    const micStatusEl = () => document.getElementById('micStatus');
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognitionImpl();
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
+        recognition.lang = 'hi-IN';
         recognition.maxAlternatives = 1;
-        recognition.lang = 'hi-IN'; // Devanagari output for both Hindi & Sanskrit sounds
 
-        recognition.onstart = function () {
-            statusText.textContent = "Status: Mic active — listening...";
+        recognition.onstart = function() {
+            recognitionActive = true;
+            if (micStatusEl()) micStatusEl().textContent = "🎙️ Mic open — listening…";
         };
 
-        recognition.onspeechstart = function () {
-            statusText.textContent = "Status: Speech detected, processing...";
+        recognition.onaudiostart = function() {
+            if (micStatusEl()) micStatusEl().textContent = "🎙️ Receiving audio…";
         };
 
-        recognition.onspeechend = function () {
-            if (isRecording) statusText.textContent = "Status: Processing pause... still listening.";
+        recognition.onspeechstart = function() {
+            if (micStatusEl()) micStatusEl().textContent = "🗣️ Speech detected — processing…";
         };
 
-        recognition.onresult = function (event) {
+        recognition.onspeechend = function() {
+            if (micStatusEl()) micStatusEl().textContent = "🎙️ Listening…";
+        };
+
+        recognition.onresult = function(event) {
             let finalTranscript = '';
             let interimTranscript = '';
-
+            
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     finalTranscript += event.results[i][0].transcript;
@@ -438,154 +426,144 @@
                     interimTranscript += event.results[i][0].transcript;
                 }
             }
-
+            
             let displayText = '';
-            if (finalTranscript) {
+            if(finalTranscript) {
                 displayText += '<span style="color: #27ae60; font-weight: bold;">' + finalTranscript + '</span>';
             }
-            if (interimTranscript) {
-                displayText += '<span style="color: #7f8c8d; font-style: italic;"> ' + interimTranscript + '</span>';
+            if(interimTranscript) {
+                displayText += '<span style="color: #7f8c8d; font-style: italic;">' + interimTranscript + '</span>';
             }
-
-            if (displayText !== '') {
-                speechTextEl.innerHTML = displayText;
+            
+            if(displayText !== '') {
+                document.getElementById('speechText').innerHTML = displayText;
             }
-
-            if (finalTranscript.trim() !== '') {
+            
+            if(finalTranscript.trim() !== '') {
                 analyzePhonetics(finalTranscript);
             }
         };
 
-        // Debounced restart: mobile Chrome ends the session frequently (short silences,
-        // ~60s time limits). Restarting instantly can throw InvalidStateError and crash-loop,
-        // so we wait briefly before retrying.
-        recognition.onend = function () {
+        recognition.onend = function() {
+            recognitionActive = false;
             if (isRecording) {
-                statusText.textContent = "Status: Reconnecting mic...";
-                clearTimeout(restartTimeout);
-                restartTimeout = setTimeout(() => {
-                    if (isRecording) {
+                setTimeout(function() {
+                    if (isRecording && !recognitionActive) {
                         try {
                             recognition.start();
                         } catch (e) {
-                            console.warn("Speech recognition restart prevented.", e);
+                            if (micStatusEl()) micStatusEl().textContent = "⚠️ Restart failed: " + e.message + " — tap Stop then Start again.";
                         }
                     }
                 }, 300);
+            } else {
+                if (micStatusEl()) micStatusEl().textContent = "";
             }
         };
-
-        recognition.onerror = function (event) {
-            console.warn("Speech error:", event.error);
-            let msg;
-            switch (event.error) {
-                case 'no-speech':
-                    msg = "No speech detected — move closer to the mic and try again.";
-                    break;
-                case 'audio-capture':
-                    msg = "No microphone found, or it's in use by another app/tab.";
-                    isRecording = false;
-                    break;
-                case 'not-allowed':
-                case 'service-not-allowed':
-                    msg = "Microphone permission denied. Allow mic access in your browser/site settings and reload.";
-                    isRecording = false;
-                    break;
-                case 'network':
-                    msg = "Network error — mobile speech recognition needs an active internet connection.";
-                    break;
-                case 'aborted':
-                    // Happens on normal stop; not a real error.
-                    return;
-                default:
-                    msg = "Speech recognition error: " + event.error;
-            }
-            statusText.textContent = "Status: " + msg;
-            if (!isRecording) {
-                recordBtn.textContent = "Start Recording & Analysis";
-                recordBtn.className = "main-btn";
-            }
-        };
-    } else {
-        speechTextEl.innerText = "Live transcription (speech-to-text) is not supported in this browser.";
-    }
-
-    // Explain the iOS limitation up front so it's clear this isn't a bug in the page.
-    if (isIOS) {
-        deviceNote.textContent = "Note: iOS (all browsers, incl. Chrome/Safari) does not support live speech-to-text — this is an Apple/WebKit limitation. TTS playback and the waveform below still work on iPhone/iPad.";
-        if (recognition) recordBtn.disabled = false; // waveform still useful even without STT
-    } else if (isAndroid) {
-        deviceNote.textContent = "Tip: on Android, keep Wi-Fi/mobile data on — Chrome's speech recognition needs an internet connection to work.";
-    }
-
-    // --- 4. AUDIO WAVEFORM AND MIC CAPTURE SETUP ---
-    let audioContext;
-    let analyser;
-    let microphoneSource;
-    let mediaStream;
-
-    const canvas = document.getElementById('waveform');
-    const canvasCtx = canvas.getContext('2d');
-
-    async function startWaveform() {
-        try {
-            mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            if (!isRecording) { // user stopped while permission dialog was open
-                mediaStream.getTracks().forEach(t => t.stop());
+        
+        recognition.onerror = function(event) {
+            recognitionActive = false;
+            if (event.error === 'no-speech') {
                 return;
             }
-            if (audioContext.state === 'suspended') {
-                await audioContext.resume();
+            let msg = "⚠️ Speech recognition error: " + event.error;
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                msg = "⚠️ Microphone permission denied. Check site permissions in your browser settings.";
+            } else if (event.error === 'network') {
+                msg = "⚠️ No network — Chrome's speech recognition needs an internet connection.";
+            } else if (event.error === 'audio-capture') {
+                msg = "⚠️ No microphone detected on this device.";
+            } else if (event.error === 'language-not-supported') {
+                msg = "⚠️ hi-IN recognition isn't supported on this device/browser.";
             }
-            analyser = audioContext.createAnalyser();
-            microphoneSource = audioContext.createMediaStreamSource(mediaStream);
-            analyser.fftSize = 2048;
-            microphoneSource.connect(analyser);
-            visualize();
-        } catch (err) {
-            // Don't let a waveform/mic failure kill speech recognition — STT is the priority feature.
-            console.warn("Waveform mic unavailable (speech recognition can continue without it):", err);
-        }
+            if (micStatusEl()) micStatusEl().textContent = msg;
+            console.log("Speech error:", event.error);
+        };
+    } else {
+        document.getElementById('speechText').innerText = "Live transcription is not supported in this browser.";
     }
+
+    // Audio Waveform Setup
+    let audioContext;
+    let analyser;
+    let microphone;
+    let mediaStream;
+    let animationFrameId;
+    
+    const canvas = document.getElementById('waveform');
+    const canvasCtx = canvas.getContext('2d');
+    const statusText = document.getElementById('status');
+    const recordBtn = document.getElementById('recordBtn');
 
     async function toggleRecording() {
         if (!isRecording) {
-            isRecording = true;
-            recordBtn.textContent = "Stop Recording";
-            recordBtn.className = "main-btn stop";
-            statusText.textContent = "Status: Requesting microphone permission...";
-            speechTextEl.innerHTML = recognition ? "Listening (Speak in Hindi/Sanskrit)..." : "Speech-to-text unsupported on this browser — showing waveform only.";
-            document.getElementById('phoneticBreakdown').innerHTML = "<em>Waiting for final speech output...</em>";
-
-            // Create the AudioContext synchronously inside the click handler (user-gesture
-            // requirement on mobile browsers) before any awaited call.
-            const AudioContextImpl = window.AudioContext || window.webkitAudioContext;
-            audioContext = new AudioContextImpl();
-
-            // Start speech recognition FIRST. On Android, requesting a raw getUserMedia stream
-            // at the same moment as SpeechRecognition's own mic access causes contention — the
-            // waveform's stream can block recognition's audio pipeline from ever receiving input,
-            // which is why "it looks like it's listening but never transcribes" on phones.
-            if (recognition) {
-                try {
-                    recognition.start();
-                } catch (e) {
-                    console.warn("Recognition start error:", e);
-                }
+            if (!window.isSecureContext) {
+                alert("This page must be opened over HTTPS (or localhost) for the microphone to work on mobile. Opening the file directly (file://) will block mic access on Android.");
+                return;
             }
 
-            // Delay the waveform's own mic grab slightly on mobile so recognition claims
-            // the microphone first. Desktop doesn't need the delay.
-            clearTimeout(waveformTimeout);
-            const delay = isMobile ? 500 : 0;
-            waveformTimeout = setTimeout(startWaveform, delay);
+            try {
+                // Detect mobile devices (they struggle with getUserMedia + webkitSpeechRecognition running simultaneously)
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-            statusText.textContent = "Status: Capturing Audio & Analyzing Speech...";
+                if (!isMobile) {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(mediaStream);
+                    
+                    analyser.fftSize = 2048;
+                    microphone.connect(analyser);
+                }
+                
+                isRecording = true;
+                recordBtn.textContent = "Stop Recording";
+                recordBtn.className = "main-btn stop";
+                statusText.textContent = "Status: Capturing Audio & Analyzing Speech...";
+                document.getElementById('speechText').innerHTML = "Listening (Speak in Hindi/Marathi)...";
+                document.getElementById('phoneticBreakdown').innerHTML = "<em>Waiting for final speech output...</em>";
+                
+                if (recognition) {
+                    setTimeout(function() {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            if (micStatusEl()) micStatusEl().textContent = "⚠️ Could not start recognizer: " + e.message;
+                        }
+                    }, isMobile ? 50 : 250);
+                }
+                
+                if (!isMobile) {
+                    visualize();
+                } else {
+                    // Draw a static message indicating the waveform is disabled on mobile
+                    canvasCtx.fillStyle = 'rgb(17, 17, 17)';
+                    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    canvasCtx.fillStyle = '#888';
+                    canvasCtx.font = '12px Arial';
+                    canvasCtx.textAlign = 'center';
+                    
+                    // Simple simulated wave for mobile
+                    canvasCtx.lineWidth = 2;
+                    canvasCtx.strokeStyle = 'rgb(46, 204, 113)';
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(0, canvas.height/2);
+                    canvasCtx.lineTo(canvas.width, canvas.height/2);
+                    canvasCtx.stroke();
+                    
+                    canvasCtx.fillText('Live Waveform disabled on mobile to prevent mic contention.', canvas.width/2, canvas.height/2 - 15);
+                    canvasCtx.fillText('Speech Recognition is fully active.', canvas.width/2, canvas.height/2 + 15);
+                }
+            } catch (err) {
+                alert('Microphone access error: ' + err.message);
+            }
         } else {
             isRecording = false;
-            clearTimeout(restartTimeout);
-            clearTimeout(waveformTimeout);
-
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
@@ -601,35 +579,36 @@
             recordBtn.textContent = "Start Recording & Analysis";
             recordBtn.className = "main-btn";
             statusText.textContent = "Status: Stopped";
+            if (micStatusEl()) micStatusEl().textContent = "";
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
 
     function visualize() {
-        if (!isRecording || !analyser) return;
-        requestAnimationFrame(visualize);
-
+        if (!isRecording) return;
+        animationFrameId = requestAnimationFrame(visualize);
+        
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
         analyser.getByteTimeDomainData(dataArray);
-
+        
         canvasCtx.fillStyle = 'rgb(17, 17, 17)';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
+        
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = 'rgb(46, 204, 113)';
         canvasCtx.beginPath();
-
+        
         const sliceWidth = canvas.width * 1.0 / bufferLength;
         let x = 0;
-
-        for (let i = 0; i < bufferLength; i++) {
+        
+        for(let i = 0; i < bufferLength; i++) {
             let v = dataArray[i] / 128.0;
             let y = v * canvas.height / 2;
-            if (i === 0) { canvasCtx.moveTo(x, y); } else { canvasCtx.lineTo(x, y); }
+            if(i === 0) { canvasCtx.moveTo(x, y); } else { canvasCtx.lineTo(x, y); }
             x += sliceWidth;
         }
-        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
         canvasCtx.stroke();
     }
 </script>
