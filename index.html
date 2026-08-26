@@ -109,7 +109,6 @@
             color: #e67e22;
             font-size: 13px;
         }
-        /* New Boxes for Live Transcription & Analysis */
         .transcription-box {
             background: #e8f8f5;
             border: 1px solid #1abc9c;
@@ -147,10 +146,6 @@
     
     <div class="analysis-box">
         <b>Systematic Organization Analysis:</b> Sanskrit sounds are systematically organized according to their articulation patterns and phonetic properties. This organization supports pronunciation training, language learning, and provides a structured phonetic foundation for speech-processing applications.
-    </div>
-
-    <div id="voiceNotice" style="display:none; background:#fdecea; border-left:4px solid #c0392b; padding:8px 12px; margin-bottom:15px; font-size:12px; color:#7a2e2e; border-radius:4px;">
-        ⚠️ No Hindi/Devanagari voice was found installed in this browser, so pronunciation may sound off.
     </div>
 
     <!-- Vowels (Svaras) Chart -->
@@ -268,7 +263,7 @@
         </table>
     </div>
 
-    <!-- Semivowels & Sibilants Chart RESTORED -->
+    <!-- Semivowels & Sibilants Chart -->
     <div class="chart-box">
         <h2>2b. Antaḥsthā (Semivowels) & Ūṣman (Sibilants + Aspirate)</h2>
         <table>
@@ -293,43 +288,7 @@
         </table>
         <p style="font-size:12px;color:#555;margin-top:8px;">
             Together with the vowels and the five stop-vargas above, these two groups complete
-            the traditional articulation-based classification of Sanskrit sounds
-            (Kaṇṭhya → Oṣṭhya, plus Antaḥsthā and Ūṣman).
-        </p>
-    </div>
-
-    <!-- Articulation Pattern Analysis Section -->
-    <div class="analysis-box">
-        <h2>Articulation Pattern Analysis</h2>
-        <p>
-            Sanskrit consonants are systematically organized according to their
-            place of articulation and phonetic properties. This classification
-            helps learners understand where and how each sound is produced.
-        </p>
-        <ul>
-            <li><b>Guttural (Kanthya):</b> Sounds produced mainly toward the throat/back of the vocal tract.</li>
-            <li><b>Palatal (Tālavya):</b> Sounds produced with the tongue approaching the palate.</li>
-            <li><b>Retroflex (Mūrdhanya):</b> Sounds produced with the tongue curled toward the roof of the mouth.</li>
-            <li><b>Dental (Dantya):</b> Sounds produced with the tongue near the teeth.</li>
-            <li><b>Labial (Oṣṭhya):</b> Sounds produced mainly using the lips.</li>
-            <li><b>Semivowels (Antaḥsthā):</b> य र ल व — produced with a partial constriction, intermediate between vowels and consonants.</li>
-            <li><b>Sibilants & Aspirate (Ūṣman):</b> श ष स ह — produced with continuous airflow/friction rather than a full stop.</li>
-        </ul>
-    </div>
-
-    <!-- Applications Section -->
-    <div class="analysis-box">
-        <h2>Applications</h2>
-        <p>
-            The systematic organization of Sanskrit sounds supports
-            <b>pronunciation training</b> by allowing learners to practice
-            individual sounds and compare their articulation patterns.
-            It supports <b>language learning</b> by organizing vowels and
-            consonants into easily understandable phonetic groups.
-            In <b>speech processing</b>, phonetic classification and acoustic
-            waveform analysis can provide useful information for applications
-            such as speech recognition, speech synthesis, pronunciation
-            assessment, and language-learning systems.
+            the traditional articulation-based classification of Sanskrit sounds.
         </p>
     </div>
 
@@ -393,7 +352,6 @@
     function analyzePhonetics(text) {
         if(!text) return;
         
-        // Find matching characters in the recognized text string using Regex
         let vowels = text.match(/[अआइईउऊऋॠएऐओऔािीुूृेैोौ]/g) || [];
         let guttural = text.match(/[कखगघङ]/g) || [];
         let palatal = text.match(/[चछजझञ]/g) || [];
@@ -403,7 +361,6 @@
         let semivowels = text.match(/[यरलव]/g) || [];
         let sibilants = text.match(/[शषसह]/g) || [];
 
-        // Remove duplicates so we only show each sound once per analysis
         const getUnique = (arr) => [...new Set(arr)].join(', ');
 
         let html = "";
@@ -419,30 +376,58 @@
         document.getElementById('phoneticBreakdown').innerHTML = html || "<em>Analyzing phonetic properties...</em>";
     }
 
-    // Speech-to-Text (STT) Recognition Setup
+    // Speech-to-Text Setup with Mobile Fixes
     let recognition;
+    let isRecording = false;
+
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
         recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = 'hi-IN'; // Indian language model
+        recognition.interimResults = true; // Crucial to show live typing on mobile
+        recognition.lang = 'hi-IN';
 
         recognition.onresult = function(event) {
             let finalTranscript = '';
+            let interimTranscript = '';
+            
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
                 }
             }
             
-            // Print the spoken text
+            // Show both interim (grey) and final (green) text so mobile users know it's working
+            let displayText = '';
+            if(finalTranscript) {
+                displayText += '<span style="color: #27ae60; font-weight: bold;">' + finalTranscript + '</span>';
+            }
+            if(interimTranscript) {
+                displayText += '<span style="color: #7f8c8d; font-style: italic;">' + interimTranscript + '</span>';
+            }
+            
+            if(displayText !== '') {
+                document.getElementById('speechText').innerHTML = displayText;
+            }
+            
+            // Only run the breakdown on the final verified text
             if(finalTranscript.trim() !== '') {
-                document.getElementById('speechText').innerHTML =
-                    '<span style="color: #27ae60; font-weight: bold; font-style: normal;">' + finalTranscript + '</span>';
-                
-                // Run the text through our custom phonetic analyzer
                 analyzePhonetics(finalTranscript);
+            }
+        };
+
+        // Mobile Chrome aggressively shuts off the mic on silence. This restarts it if recording is active.
+        recognition.onend = function() {
+            if (isRecording) {
+                recognition.start();
+            }
+        };
+        
+        recognition.onerror = function(event) {
+            if (event.error !== 'no-speech') {
+                console.log("Speech error:", event.error);
             }
         };
     } else {
@@ -454,7 +439,6 @@
     let analyser;
     let microphone;
     let mediaStream;
-    let isRecording = false;
     
     const canvas = document.getElementById('waveform');
     const canvasCtx = canvas.getContext('2d');
@@ -476,14 +460,14 @@
                 recordBtn.textContent = "Stop Recording";
                 recordBtn.className = "main-btn stop";
                 statusText.textContent = "Status: Capturing Audio & Analyzing Speech...";
-                document.getElementById('speechText').innerHTML = "Listening...";
-                document.getElementById('phoneticBreakdown').innerHTML = "<em>Waiting for speech input...</em>";
+                document.getElementById('speechText').innerHTML = "Listening (Speak in Hindi/Marathi)...";
+                document.getElementById('phoneticBreakdown').innerHTML = "<em>Waiting for final speech output...</em>";
                 
                 if (recognition) recognition.start();
                 
                 visualize();
             } catch (err) {
-                alert('Microphone access blocked: Please ensure you are viewing this via an https:// link.');
+                alert('Microphone access blocked: Please check browser permissions.');
             }
         } else {
             isRecording = false;
