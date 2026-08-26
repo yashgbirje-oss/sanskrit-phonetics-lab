@@ -105,7 +105,7 @@
             color: #e67e22;
             font-size: 13px;
         }
-        /* New Box for Live Transcription */
+        /* New Boxes for Live Transcription & Analysis */
         .transcription-box {
             background: #e8f8f5;
             border: 1px solid #1abc9c;
@@ -114,8 +114,25 @@
             margin-top: 15px;
             font-size: 16px;
             color: #2c3e50;
-            min-height: 50px;
             text-align: center;
+        }
+        .phonetic-breakdown {
+            background: #fff;
+            border: 1px dashed #1abc9c;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: left;
+            border-radius: 4px;
+        }
+        .phonetic-breakdown span.category {
+            color: #2980b9;
+            font-weight: bold;
+        }
+        .phonetic-breakdown span.sounds {
+            color: #c0392b;
+            font-weight: bold;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -126,10 +143,6 @@
     
     <div class="analysis-box">
         <b>Systematic Organization Analysis:</b> Sanskrit sounds are systematically organized according to their articulation patterns and phonetic properties. This organization supports pronunciation training, language learning, and provides a structured phonetic foundation for speech-processing applications.
-    </div>
-
-    <div id="voiceNotice" style="display:none; background:#fdecea; border-left:4px solid #c0392b; padding:8px 12px; margin-bottom:15px; font-size:12px; color:#7a2e2e; border-radius:4px;">
-        ⚠️ No Hindi/Devanagari voice was found installed in this browser, so pronunciation may sound off.
     </div>
 
     <!-- Vowels (Svaras) Chart -->
@@ -205,7 +218,7 @@
                 <th>Nasal</th>
             </tr>
             <tr>
-                <td><b>Guttural</b></td>
+                <td><b>Guttural (Kanthya)</b></td>
                 <td>क (ka)<br><button class="tts-btn" onclick="speakText('क')">🔊 Listen</button></td>
                 <td>ख (kha)<br><button class="tts-btn" onclick="speakText('ख')">🔊 Listen</button></td>
                 <td>ग (ga)<br><button class="tts-btn" onclick="speakText('ग')">🔊 Listen</button></td>
@@ -213,7 +226,7 @@
                 <td>ङ (ṅa)<br><button class="tts-btn" onclick="speakText('ङा')">🔊 Listen</button></td>
             </tr>
             <tr>
-                <td><b>Palatal</b></td>
+                <td><b>Palatal (Talavya)</b></td>
                 <td>च (ca)<br><button class="tts-btn" onclick="speakText('च')">🔊 Listen</button></td>
                 <td>छ (cha)<br><button class="tts-btn" onclick="speakText('छ')">🔊 Listen</button></td>
                 <td>ज (ja)<br><button class="tts-btn" onclick="speakText('ज')">🔊 Listen</button></td>
@@ -221,7 +234,7 @@
                 <td>ञ (ña)<br><button class="tts-btn" onclick="speakText('ञ')">🔊 Listen</button></td>
             </tr>
             <tr>
-                <td><b>Retroflex</b></td>
+                <td><b>Retroflex (Murdhanya)</b></td>
                 <td>ट (ṭa)<br><button class="tts-btn" onclick="speakText('ट')">🔊 Listen</button></td>
                 <td>ठ (ṭha)<br><button class="tts-btn" onclick="speakText('ठ')">🔊 Listen</button></td>
                 <td>ड (ḍa)<br><button class="tts-btn" onclick="speakText('ड')">🔊 Listen</button></td>
@@ -229,7 +242,7 @@
                 <td>ण (ṇa)<br><button class="tts-btn" onclick="speakText('णा')">🔊 Listen</button></td>
             </tr>
             <tr>
-                <td><b>Dental</b></td>
+                <td><b>Dental (Dantya)</b></td>
                 <td>त (ta)<br><button class="tts-btn" onclick="speakText('त')">🔊 Listen</button></td>
                 <td>थ (tha)<br><button class="tts-btn" onclick="speakText('थ')">🔊 Listen</button></td>
                 <td>द (da)<br><button class="tts-btn" onclick="speakText('द')">🔊 Listen</button></td>
@@ -237,7 +250,7 @@
                 <td>न (na)<br><button class="tts-btn" onclick="speakText('न')">🔊 Listen</button></td>
             </tr>
             <tr>
-                <td><b>Labial</b></td>
+                <td><b>Labial (Oshthya)</b></td>
                 <td>प (pa)<br><button class="tts-btn" onclick="speakText('प')">🔊 Listen</button></td>
                 <td>फ (pha)<br><button class="tts-btn" onclick="speakText('फ')">🔊 Listen</button></td>
                 <td>ब (ba)<br><button class="tts-btn" onclick="speakText('ब')">🔊 Listen</button></td>
@@ -247,8 +260,29 @@
         </table>
     </div>
 
+    <!-- Semivowels & Sibilants Chart -->
+    <div class="chart-box">
+        <h2>2b. Antaḥsthā (Semivowels) & Ūṣman (Sibilants + Aspirate)</h2>
+        <table>
+            <tr>
+                <td><b>Semivowels (Antaḥsthā)</b></td>
+                <td>य (ya)<br><button class="tts-btn" onclick="speakText('य')">🔊 Listen</button></td>
+                <td>र (ra)<br><button class="tts-btn" onclick="speakText('र')">🔊 Listen</button></td>
+                <td>ल (la)<br><button class="tts-btn" onclick="speakText('ल')">🔊 Listen</button></td>
+                <td>व (va)<br><button class="tts-btn" onclick="speakText('व')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Sibilants & Aspirate (Ūṣman)</b></td>
+                <td>श (śa)<br><button class="tts-btn" onclick="speakText('श')">🔊 Listen</button></td>
+                <td>ष (ṣa)<br><button class="tts-btn" onclick="speakText('ष')">🔊 Listen</button></td>
+                <td>स (sa)<br><button class="tts-btn" onclick="speakText('स')">🔊 Listen</button></td>
+                <td>ह (ha)<br><button class="tts-btn" onclick="speakText('ह')">🔊 Listen</button></td>
+            </tr>
+        </table>
+    </div>
+
     <!-- Speech Processing Waveform Section -->
-    <h2>3. Speech Processing Application (Live Waveform & STT Analysis)</h2>
+    <h2>3. Speech Processing Application (Live Analyzer)</h2>
     <p id="status">Status: Idle</p>
     
     <div class="controls">
@@ -257,10 +291,14 @@
     
     <canvas id="waveform" width="500" height="130"></canvas>
 
-    <!-- The New Speech-to-Text Transcription Box -->
+    <!-- The New Speech-to-Text & Phonetic Analysis Box -->
     <div class="transcription-box">
-        <strong>Live Translation / Speech-to-Text:</strong><br>
-        <span id="speechText" style="color: #7f8c8d; font-style: italic;">Press start and speak to analyze text...</span>
+        <strong>Live STT Recognition:</strong><br>
+        <span id="speechText" style="color: #7f8c8d; font-style: italic;">Press start and speak clearly...</span>
+        
+        <div class="phonetic-breakdown" id="phoneticBreakdown">
+            <em>Phonetic breakdown will appear here...</em>
+        </div>
     </div>
 
 </div>
@@ -268,52 +306,65 @@
 <script>
     // Text-to-Speech Setup
     let cachedVoices = [];
-    let voiceWarningShown = false;
-
+    
     function refreshVoices() {
         if ('speechSynthesis' in window) {
             const v = window.speechSynthesis.getVoices();
             if (v && v.length) cachedVoices = v;
         }
     }
-
     if ('speechSynthesis' in window) {
         refreshVoices();
         window.speechSynthesis.onvoiceschanged = refreshVoices;
     }
 
-    function pickHindiVoice() {
-        let voice = cachedVoices.find(v => v.lang && v.lang.toLowerCase() === "hi-in");
-        if (!voice) {
-            voice = cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi"));
-        }
-        return voice || null;
-    }
-
     function speakText(text) {
-        if (!('speechSynthesis' in window)) {
-            alert("Text-to-Speech is not supported in this browser.");
-            return;
-        }
+        if (!('speechSynthesis' in window)) return;
         refreshVoices();
         window.speechSynthesis.cancel();
         
-        const hindiVoice = pickHindiVoice();
+        let hindiVoice = cachedVoices.find(v => v.lang && v.lang.toLowerCase() === "hi-in") || 
+                         cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi"));
+        
         const utterance = new SpeechSynthesisUtterance(text);
-
         if (hindiVoice) {
             utterance.voice = hindiVoice;
             utterance.lang = hindiVoice.lang;
         } else {
             utterance.lang = "hi-IN";
-            if (!voiceWarningShown) {
-                voiceWarningShown = true;
-                const el = document.getElementById('voiceNotice');
-                if (el) el.style.display = 'block';
-            }
         }
         utterance.rate = 0.75;
         window.speechSynthesis.speak(utterance);
+    }
+
+    // Phonetic Analysis Algorithm
+    function analyzePhonetics(text) {
+        if(!text) return;
+        
+        // Find matching characters in the recognized text string using Regex
+        let vowels = text.match(/[अआइईउऊऋॠएऐओऔािीुूृेैोौ]/g) || [];
+        let guttural = text.match(/[कखगघङ]/g) || [];
+        let palatal = text.match(/[चछजझञ]/g) || [];
+        let retroflex = text.match(/[टठडढण]/g) || [];
+        let dental = text.match(/[तथदधन]/g) || [];
+        let labial = text.match(/[पफबभम]/g) || [];
+        let semivowels = text.match(/[यरलव]/g) || [];
+        let sibilants = text.match(/[शषसह]/g) || [];
+
+        // Remove duplicates so we only show each sound once per analysis
+        const getUnique = (arr) => [...new Set(arr)].join(', ');
+
+        let html = "";
+        if(vowels.length) html += `<span class="category">Swara (Vowels):</span> <span class="sounds">${getUnique(vowels)}</span><br>`;
+        if(guttural.length) html += `<span class="category">Vyanjana - Kanthya (Guttural):</span> <span class="sounds">${getUnique(guttural)}</span><br>`;
+        if(palatal.length) html += `<span class="category">Vyanjana - Talavya (Palatal):</span> <span class="sounds">${getUnique(palatal)}</span><br>`;
+        if(retroflex.length) html += `<span class="category">Vyanjana - Murdhanya (Retroflex):</span> <span class="sounds">${getUnique(retroflex)}</span><br>`;
+        if(dental.length) html += `<span class="category">Vyanjana - Dantya (Dental):</span> <span class="sounds">${getUnique(dental)}</span><br>`;
+        if(labial.length) html += `<span class="category">Vyanjana - Oshthya (Labial):</span> <span class="sounds">${getUnique(labial)}</span><br>`;
+        if(semivowels.length) html += `<span class="category">Antaḥsthā (Semivowels):</span> <span class="sounds">${getUnique(semivowels)}</span><br>`;
+        if(sibilants.length) html += `<span class="category">Ūṣman (Sibilants & Aspirate):</span> <span class="sounds">${getUnique(sibilants)}</span><br>`;
+
+        document.getElementById('phoneticBreakdown').innerHTML = html || "<em>Analyzing phonetic properties...</em>";
     }
 
     // Speech-to-Text (STT) Recognition Setup
@@ -323,25 +374,24 @@
         recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
-        recognition.lang = 'hi-IN'; // Uses Indian language model for accurate Devanagari output
+        recognition.lang = 'hi-IN'; // Indian language model
 
         recognition.onresult = function(event) {
             let finalTranscript = '';
-            let interimTranscript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     finalTranscript += event.results[i][0].transcript;
-                } else {
-                    interimTranscript += event.results[i][0].transcript;
                 }
             }
-            document.getElementById('speechText').innerHTML =
-                '<span style="color: #27ae60; font-weight: bold; font-style: normal;">' + finalTranscript + '</span>' +
-                '<span style="color: #7f8c8d; font-style: italic;">' + interimTranscript + '</span>';
-        };
-        
-        recognition.onerror = function(event) {
-            console.log("Speech recognition error", event.error);
+            
+            // Print the spoken text
+            if(finalTranscript.trim() !== '') {
+                document.getElementById('speechText').innerHTML =
+                    '<span style="color: #27ae60; font-weight: bold; font-style: normal;">' + finalTranscript + '</span>';
+                
+                // Run the text through our custom phonetic analyzer
+                analyzePhonetics(finalTranscript);
+            }
         };
     } else {
         document.getElementById('speechText').innerText = "Live transcription is not supported in this browser.";
@@ -375,11 +425,9 @@
                 recordBtn.className = "main-btn stop";
                 statusText.textContent = "Status: Capturing Audio & Analyzing Speech...";
                 document.getElementById('speechText').innerHTML = "Listening...";
+                document.getElementById('phoneticBreakdown').innerHTML = "<em>Waiting for speech input...</em>";
                 
-                // Start Speech Recognition
-                if (recognition) {
-                    recognition.start();
-                }
+                if (recognition) recognition.start();
                 
                 visualize();
             } catch (err) {
@@ -387,28 +435,19 @@
             }
         } else {
             isRecording = false;
-
             if (mediaStream) {
-                mediaStream.getTracks().forEach(function(track) {
-                    track.stop();
-                });
+                mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
             }
-
             if (audioContext) {
                 audioContext.close();
                 audioContext = null;
             }
-            
-            // Stop Speech Recognition
-            if (recognition) {
-                recognition.stop();
-            }
+            if (recognition) recognition.stop();
 
             recordBtn.textContent = "Start Recording & Analysis";
             recordBtn.className = "main-btn";
             statusText.textContent = "Status: Stopped";
-
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
