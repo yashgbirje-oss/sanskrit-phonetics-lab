@@ -72,6 +72,10 @@
             font-size: 13px;
             line-height: 1.5;
         }
+        .analysis-box ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
         .controls {
             text-align: center;
             margin: 15px 0;
@@ -143,6 +147,10 @@
     
     <div class="analysis-box">
         <b>Systematic Organization Analysis:</b> Sanskrit sounds are systematically organized according to their articulation patterns and phonetic properties. This organization supports pronunciation training, language learning, and provides a structured phonetic foundation for speech-processing applications.
+    </div>
+
+    <div id="voiceNotice" style="display:none; background:#fdecea; border-left:4px solid #c0392b; padding:8px 12px; margin-bottom:15px; font-size:12px; color:#7a2e2e; border-radius:4px;">
+        ⚠️ No Hindi/Devanagari voice was found installed in this browser, so pronunciation may sound off.
     </div>
 
     <!-- Vowels (Svaras) Chart -->
@@ -260,10 +268,14 @@
         </table>
     </div>
 
-    <!-- Semivowels & Sibilants Chart -->
+    <!-- Semivowels & Sibilants Chart RESTORED -->
     <div class="chart-box">
         <h2>2b. Antaḥsthā (Semivowels) & Ūṣman (Sibilants + Aspirate)</h2>
         <table>
+            <tr>
+                <th>Group</th>
+                <th colspan="4">Sounds</th>
+            </tr>
             <tr>
                 <td><b>Semivowels (Antaḥsthā)</b></td>
                 <td>य (ya)<br><button class="tts-btn" onclick="speakText('य')">🔊 Listen</button></td>
@@ -279,6 +291,46 @@
                 <td>ह (ha)<br><button class="tts-btn" onclick="speakText('ह')">🔊 Listen</button></td>
             </tr>
         </table>
+        <p style="font-size:12px;color:#555;margin-top:8px;">
+            Together with the vowels and the five stop-vargas above, these two groups complete
+            the traditional articulation-based classification of Sanskrit sounds
+            (Kaṇṭhya → Oṣṭhya, plus Antaḥsthā and Ūṣman).
+        </p>
+    </div>
+
+    <!-- Articulation Pattern Analysis Section -->
+    <div class="analysis-box">
+        <h2>Articulation Pattern Analysis</h2>
+        <p>
+            Sanskrit consonants are systematically organized according to their
+            place of articulation and phonetic properties. This classification
+            helps learners understand where and how each sound is produced.
+        </p>
+        <ul>
+            <li><b>Guttural (Kanthya):</b> Sounds produced mainly toward the throat/back of the vocal tract.</li>
+            <li><b>Palatal (Tālavya):</b> Sounds produced with the tongue approaching the palate.</li>
+            <li><b>Retroflex (Mūrdhanya):</b> Sounds produced with the tongue curled toward the roof of the mouth.</li>
+            <li><b>Dental (Dantya):</b> Sounds produced with the tongue near the teeth.</li>
+            <li><b>Labial (Oṣṭhya):</b> Sounds produced mainly using the lips.</li>
+            <li><b>Semivowels (Antaḥsthā):</b> य र ल व — produced with a partial constriction, intermediate between vowels and consonants.</li>
+            <li><b>Sibilants & Aspirate (Ūṣman):</b> श ष स ह — produced with continuous airflow/friction rather than a full stop.</li>
+        </ul>
+    </div>
+
+    <!-- Applications Section -->
+    <div class="analysis-box">
+        <h2>Applications</h2>
+        <p>
+            The systematic organization of Sanskrit sounds supports
+            <b>pronunciation training</b> by allowing learners to practice
+            individual sounds and compare their articulation patterns.
+            It supports <b>language learning</b> by organizing vowels and
+            consonants into easily understandable phonetic groups.
+            In <b>speech processing</b>, phonetic classification and acoustic
+            waveform analysis can provide useful information for applications
+            such as speech recognition, speech synthesis, pronunciation
+            assessment, and language-learning systems.
+        </p>
     </div>
 
     <!-- Speech Processing Waveform Section -->
