@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanskrit Phonetics, TTS & Waveform Lab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 18px;
+        }
+        h1 { font-size: 22px; }
+        .chart-box {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+            min-width: 400px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center;
+        }
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+        .tts-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 4px;
+            margin-right: 2px;
+        }
+        .tts-btn:active {
+            background: #2980b9;
+        }
+        .analysis-box {
+            background: #eef2f3;
+            border-left: 4px solid #2980b9;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .analysis-box ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
+        .controls {
+            text-align: center;
+            margin: 15px 0;
+        }
+        button.main-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+        }
+        button.main-btn.stop {
+            background: #c0392b;
+        }
+        canvas {
+            display: block;
+            margin: 10px auto;
+            background: #111;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 500px;
+            height: 130px;
+        }
+        #status {
+            text-align: center;
+            font-weight: bold;
+            color: #e67e22;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sanskrit Phonetic & Acoustic Experiment Lab</h1>
+    
+    <!-- Analysis Section with Updated Wording -->
+    <div class="analysis-box">
+        <b>Systematic Organization Analysis:</b> Sanskrit sounds are systematically organized according to their articulation patterns and phonetic properties. This organization supports pronunciation training, language learning, and provides a structured phonetic foundation for speech-processing applications.
+    </div>
+
+    <!-- Vowels (Svaras) Chart -->
+    <div class="chart-box">
+        <h2>1. Swara (Vowels - स्वराः) Classification Chart</h2>
+        <table>
+            <tr>
+                <th>Vowel Group</th>
+                <th>Short (Hrasva)</th>
+                <th>Long (Dīrgha)</th>
+                <th>TTS Action</th>
+            </tr>
+            <tr>
+                <td><b>A-series</b></td>
+                <td>अ (a)</td>
+                <td>आ (ā)</td>
+                <td>
+                    <button class="tts-btn" onclick="speakText('अ')">🔊 Listen अ</button>
+                    <button class="tts-btn" onclick="speakText('आ')">🔊 Listen आ</button>
+                </td>
+            </tr>
+            <tr>
+                <td><b>I-series</b></td>
+                <td>इ (i)</td>
+                <td>ई (ī)</td>
+                <td>
+                    <button class="tts-btn" onclick="speakText('इ')">🔊 Listen इ</button>
+                    <button class="tts-btn" onclick="speakText('ई')">🔊 Listen ई</button>
+                </td>
+            </tr>
+            <tr>
+                <td><b>U-series</b></td>
+                <td>उ (u)</td>
+                <td>ऊ (ū)</td>
+                <td>
+                    <button class="tts-btn" onclick="speakText('उ')">🔊 Listen उ</button>
+                    <button class="tts-btn" onclick="speakText('ऊ')">🔊 Listen ऊ</button>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Vocalic R-series</b></td>
+                <td>ऋ (ṛ)</td>
+                <td>ॠ (ṝ)</td>
+                <td>
+                    <button class="tts-btn" onclick="speakText('ऋषि')">🔊 Hear ṛ (ऋषि)</button>
+                    <button class="tts-btn" onclick="speakText('पितॄन्')">🔊 Hear ṝ (पितॄन्)</button>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Diphthongs</b></td>
+                <td>ए (e), ओ (o)</td>
+                <td>ऐ (ai), औ (au)</td>
+                <td>
+                    <button class="tts-btn" onclick="speakText('ए')">🔊 ए</button>
+                    <button class="tts-btn" onclick="speakText('ऐ')">🔊 ऐ</button>
+                    <button class="tts-btn" onclick="speakText('ओ')">🔊 ओ</button>
+                    <button class="tts-btn" onclick="speakText('औ')">🔊 औ</button>
+                </td>
+            </tr>
+        </table>
+        <p style="font-size:12px;color:#555;margin-top:8px;">
+            <b>Note on ऋ/ॠ:</b> the vocalic R vowels rarely occur as standalone syllables
+            in real Sanskrit/Hindi text, so isolated TTS often mispronounces them
+            (sometimes reading ऋ as the consonant र instead). Their buttons instead speak
+            real words (ऋषि, पितॄन्) so you hear the authentic vocalic-r sound in context.
+        </p>
+    </div>
+
+    <!-- Consonants (Vyanjanas) Chart -->
+    <div class="chart-box">
+        <h2>2. Vargīya Vyanjana (Consonants - व्यंजनानि) Matrix</h2>
+        <table>
+            <tr>
+                <th>Varga</th>
+                <th>Unvoiced Unasp</th>
+                <th>Unvoiced Asp</th>
+                <th>Voiced Unasp</th>
+                <th>Voiced Asp</th>
+                <th>Nasal</th>
+            </tr>
+            <tr>
+                <td><b>Guttural</b></td>
+                <td>क (ka)<br><button class="tts-btn" onclick="speakText('क')">🔊 Listen</button></td>
+                <td>ख (kha)<br><button class="tts-btn" onclick="speakText('ख')">🔊 Listen</button></td>
+                <td>ग (ga)<br><button class="tts-btn" onclick="speakText('ग')">🔊 Listen</button></td>
+                <td>घ (gha)<br><button class="tts-btn" onclick="speakText('घ')">🔊 Listen</button></td>
+                <td>ङ (ṅa)<br><button class="tts-btn" onclick="speakText('ङा')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Palatal</b></td>
+                <td>च (ca)<br><button class="tts-btn" onclick="speakText('च')">🔊 Listen</button></td>
+                <td>छ (cha)<br><button class="tts-btn" onclick="speakText('छ')">🔊 Listen</button></td>
+                <td>ज (ja)<br><button class="tts-btn" onclick="speakText('ज')">🔊 Listen</button></td>
+                <td>झ (jha)<br><button class="tts-btn" onclick="speakText('झ')">🔊 Listen</button></td>
+                <td>ञ (ña)<br><button class="tts-btn" onclick="speakText('ञ')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Retroflex</b></td>
+                <td>ट (ṭa)<br><button class="tts-btn" onclick="speakText('ट')">🔊 Listen</button></td>
+                <td>ठ (ṭha)<br><button class="tts-btn" onclick="speakText('ठ')">🔊 Listen</button></td>
+                <td>ड (ḍa)<br><button class="tts-btn" onclick="speakText('ड')">🔊 Listen</button></td>
+                <td>ढ (ḍha)<br><button class="tts-btn" onclick="speakText('ढ')">🔊 Listen</button></td>
+                <td>ण (ṇa)<br><button class="tts-btn" onclick="speakText('णा')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Dental</b></td>
+                <td>त (ta)<br><button class="tts-btn" onclick="speakText('त')">🔊 Listen</button></td>
+                <td>थ (tha)<br><button class="tts-btn" onclick="speakText('थ')">🔊 Listen</button></td>
+                <td>द (da)<br><button class="tts-btn" onclick="speakText('द')">🔊 Listen</button></td>
+                <td>ध (dha)<br><button class="tts-btn" onclick="speakText('ध')">🔊 Listen</button></td>
+                <td>न (na)<br><button class="tts-btn" onclick="speakText('न')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Labial</b></td>
+                <td>प (pa)<br><button class="tts-btn" onclick="speakText('प')">🔊 Listen</button></td>
+                <td>फ (pha)<br><button class="tts-btn" onclick="speakText('फ')">🔊 Listen</button></td>
+                <td>ब (ba)<br><button class="tts-btn" onclick="speakText('ब')">🔊 Listen</button></td>
+                <td>भ (bha)<br><button class="tts-btn" onclick="speakText('भ')">🔊 Listen</button></td>
+                <td>म (ma)<br><button class="tts-btn" onclick="speakText('म')">🔊 Listen</button></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Semivowels & Sibilants Chart -->
+    <div class="chart-box">
+        <h2>2b. Antaḥsthā (Semivowels) & Ūṣman (Sibilants + Aspirate)</h2>
+        <table>
+            <tr>
+                <th>Group</th>
+                <th colspan="4">Sounds</th>
+            </tr>
+            <tr>
+                <td><b>Semivowels (Antaḥsthā)</b></td>
+                <td>य (ya)<br><button class="tts-btn" onclick="speakText('य')">🔊 Listen</button></td>
+                <td>र (ra)<br><button class="tts-btn" onclick="speakText('र')">🔊 Listen</button></td>
+                <td>ल (la)<br><button class="tts-btn" onclick="speakText('ल')">🔊 Listen</button></td>
+                <td>व (va)<br><button class="tts-btn" onclick="speakText('व')">🔊 Listen</button></td>
+            </tr>
+            <tr>
+                <td><b>Sibilants & Aspirate (Ūṣman)</b></td>
+                <td>श (śa)<br><button class="tts-btn" onclick="speakText('श')">🔊 Listen</button></td>
+                <td>ष (ṣa)<br><button class="tts-btn" onclick="speakText('ष')">🔊 Listen</button></td>
+                <td>स (sa)<br><button class="tts-btn" onclick="speakText('स')">🔊 Listen</button></td>
+                <td>ह (ha)<br><button class="tts-btn" onclick="speakText('ह')">🔊 Listen</button></td>
+            </tr>
+        </table>
+        <p style="font-size:12px;color:#555;margin-top:8px;">
+            Together with the vowels and the five stop-vargas above, these two groups complete
+            the traditional articulation-based classification of Sanskrit sounds
+            (Kaṇṭhya → Oṣṭhya, plus Antaḥsthā and Ūṣman).
+        </p>
+    </div>
+
+    <!-- Articulation Pattern Analysis Section -->
+    <div class="analysis-box">
+        <h2>Articulation Pattern Analysis</h2>
+        <p>
+            Sanskrit consonants are systematically organized according to their
+            place of articulation and phonetic properties. This classification
+            helps learners understand where and how each sound is produced.
+        </p>
+        <ul>
+            <li><b>Guttural (Kanthya):</b> Sounds produced mainly toward the throat/back of the vocal tract.</li>
+            <li><b>Palatal (Tālavya):</b> Sounds produced with the tongue approaching the palate.</li>
+            <li><b>Retroflex (Mūrdhanya):</b> Sounds produced with the tongue curled toward the roof of the mouth.</li>
+            <li><b>Dental (Dantya):</b> Sounds produced with the tongue near the teeth.</li>
+            <li><b>Labial (Oṣṭhya):</b> Sounds produced mainly using the lips.</li>
+            <li><b>Semivowels (Antaḥsthā):</b> य र ल व — produced with a partial constriction, intermediate between vowels and consonants.</li>
+            <li><b>Sibilants & Aspirate (Ūṣman):</b> श ष स ह — produced with continuous airflow/friction rather than a full stop.</li>
+        </ul>
+    </div>
+
+    <!-- Applications Section -->
+    <div class="analysis-box">
+        <h2>Applications</h2>
+        <p>
+            The systematic organization of Sanskrit sounds supports
+            <b>pronunciation training</b> by allowing learners to practice
+            individual sounds and compare their articulation patterns.
+            It supports <b>language learning</b> by organizing vowels and
+            consonants into easily understandable phonetic groups.
+            In <b>speech processing</b>, phonetic classification and acoustic
+            waveform analysis can provide useful information for applications
+            such as speech recognition, speech synthesis, pronunciation
+            assessment, and language-learning systems.
+        </p>
+    </div>
+
+    <!-- Speech Processing Waveform Section -->
+    <h2>3. Speech Processing Application (Live Waveform Analysis)</h2>
+    <p id="status">Status: Idle</p>
+    <div class="controls">
+        <button id="recordBtn" class="main-btn" onclick="toggleRecording()">Start Recording & Waveform</button>
+    </div>
+    <canvas id="waveform" width="500" height="130"></canvas>
+</div>
+
+<script>
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) {
+            alert("Text-to-Speech is not supported in this browser.");
+            return;
+        }
+
+        // Stop any previous speech
+        window.speechSynthesis.cancel();
+
+        const voices = window.speechSynthesis.getVoices();
+
+        // Find Hindi voice
+        let hindiVoice = voices.find(function(voice) {
+            return voice.lang &&
+                   voice.lang.toLowerCase() === "hi-in";
+        });
+
+        // If exact Hindi voice is unavailable, find any Hindi voice
+        if (!hindiVoice) {
+            hindiVoice = voices.find(function(voice) {
+                return voice.lang &&
+                       voice.lang.toLowerCase().startsWith("hi");
+            });
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        if (hindiVoice) {
+            utterance.voice = hindiVoice;
+            utterance.lang = hindiVoice.lang;
+        } else {
+            utterance.lang = "hi-IN";
+        }
+
+        utterance.rate = 0.75;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // Some browsers load voices after the page loads
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = function() {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
+    let audioContext;
+    let analyser;
+    let microphone;
+    let mediaStream;
+    let isRecording = false;
+    
+    const canvas = document.getElementById('waveform');
+    const canvasCtx = canvas.getContext('2d');
+    const statusText = document.getElementById('status');
+    const recordBtn = document.getElementById('recordBtn');
+
+    async function toggleRecording() {
+        if (!isRecording) {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(mediaStream);
+                
+                analyser.fftSize = 2048;
+                microphone.connect(analyser);
+                
+                isRecording = true;
+                recordBtn.textContent = "Stop Recording";
+                recordBtn.className = "main-btn stop";
+                statusText.textContent = "Status: Capturing Audio Waveform for Speech Analysis...";
+                visualize();
+            } catch (err) {
+                alert('Microphone access blocked: Please ensure you are viewing this via an https:// link.');
+            }
+        } else {
+            isRecording = false;
+
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+                mediaStream = null;
+            }
+
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+
+            recordBtn.textContent = "Start Recording & Waveform";
+            recordBtn.className = "main-btn";
+            statusText.textContent = "Status: Stopped";
+
+            canvasCtx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+        }
+    }
+
+    function visualize() {
+        if (!isRecording) return;
+        requestAnimationFrame(visualize);
+        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteTimeDomainData(dataArray);
+        
+        canvasCtx.fillStyle = 'rgb(17, 17, 17)';
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'rgb(46, 204, 113)';
+        canvasCtx.beginPath();
+        
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        
+        for(let i = 0; i < bufferLength; i++) {
+            let v = dataArray[i] / 128.0;
+            let y = v * canvas.height / 2;
+            if(i === 0) { canvasCtx.moveTo(x, y); } else { canvasCtx.lineTo(x, y); }
+            x += sliceWidth;
+        }
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
+        canvasCtx.stroke();
+    }
+</script>
+
+</body>
+</html>
