@@ -460,6 +460,7 @@
     let recognition;
     let isRecording = false;
     let recognitionActive = false;
+    let consecutiveNoSpeech = 0;
     const micStatusEl = () => document.getElementById('micStatus');
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -488,6 +489,7 @@
         };
 
         recognition.onresult = function(event) {
+            consecutiveNoSpeech = 0; // Reset counter on successful result
             let finalTranscript = '';
             let interimTranscript = '';
             
@@ -519,15 +521,25 @@
         recognition.onend = function() {
             recognitionActive = false;
             if (isRecording) {
+                consecutiveNoSpeech++;
+                if (consecutiveNoSpeech > 3) {
+                    // Stop the infinite loop if it fails instantly too many times
+                    toggleRecording(); // Stop it safely
+                    if (micStatusEl()) micStatusEl().textContent = "⚠️ Engine stopped due to repeated silent failures (Mic blocked or locked).";
+                    alert("Speech recognition kept failing instantly. Your microphone might be locked by another app, or Android is blocking it.");
+                    return;
+                }
+                
+                if (micStatusEl()) micStatusEl().textContent = "🔄 Reconnecting mic (Attempt " + consecutiveNoSpeech + ")...";
                 setTimeout(function() {
                     if (isRecording && !recognitionActive) {
                         try {
                             recognition.start();
                         } catch (e) {
-                            if (micStatusEl()) micStatusEl().textContent = "⚠️ Restart failed: " + e.message + " — tap Stop then Start again.";
+                            if (micStatusEl()) micStatusEl().textContent = "⚠️ Restart failed: " + e.message;
                         }
                     }
-                }, 300);
+                }, 1000); // Increased delay to 1 second to prevent frantic browser freezing
             } else {
                 if (micStatusEl()) micStatusEl().textContent = "";
             }
@@ -541,12 +553,16 @@
             let msg = "⚠️ Speech recognition error: " + event.error;
             if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
                 msg = "⚠️ Microphone permission denied. Check site permissions in your browser settings.";
+                consecutiveNoSpeech = 99; // Force stop on permission error
             } else if (event.error === 'network') {
                 msg = "⚠️ No network — Chrome's speech recognition needs an internet connection.";
+                consecutiveNoSpeech = 99;
             } else if (event.error === 'audio-capture') {
                 msg = "⚠️ No microphone detected on this device.";
+                consecutiveNoSpeech = 99;
             } else if (event.error === 'language-not-supported') {
                 msg = "⚠️ hi-IN recognition isn't supported on this device/browser.";
+                consecutiveNoSpeech = 99;
             }
             if (micStatusEl()) micStatusEl().textContent = msg;
             console.log("Speech error:", event.error);
@@ -576,7 +592,7 @@
 
             try {
                 // Detect mobile devices (they struggle with getUserMedia + webkitSpeechRecognition running simultaneously)
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent) || (window.matchMedia && window.matchMedia("(max-width: 1024px) and (hover: none)").matches);
 
                 if (!isMobile) {
                     mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -589,6 +605,7 @@
                 }
                 
                 isRecording = true;
+                consecutiveNoSpeech = 0; // Reset counter on fresh start
                 recordBtn.textContent = "Stop Recording";
                 recordBtn.className = "main-btn stop";
                 statusText.textContent = "Status: Capturing Audio & Analyzing Speech...";
