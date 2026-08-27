@@ -6,136 +6,173 @@
     <title>Sanskrit Phonetics, TTS & Waveform Lab</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7f6;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #eef2f5;
             margin: 0;
-            padding: 15px;
-            color: #333;
+            padding: 20px 15px;
+            color: #2c3e50;
+            line-height: 1.6;
         }
         .container {
-            max-width: 850px;
+            max-width: 900px;
             margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
-        h1, h2 {
-            color: #2c3e50;
+        h1 {
+            color: #1a252f;
             text-align: center;
-            font-size: 18px;
+            font-size: 26px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
         }
-        h1 { font-size: 22px; }
+        h2 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
         .chart-box {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             overflow-x: auto;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 12px;
-            min-width: 400px;
+            margin-top: 15px;
+            font-size: 13px;
+            min-width: 450px;
         }
         th, td {
-            border: 1px solid #ccc;
-            padding: 6px;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
             text-align: center;
         }
         th {
-            background-color: #2980b9;
-            color: white;
+            background-color: #34495e;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f8fafc;
         }
         .tts-btn {
             background: #3498db;
             color: white;
             border: none;
-            padding: 4px 8px;
-            font-size: 11px;
-            border-radius: 3px;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 4px;
-            margin-right: 2px;
+            margin-top: 5px;
+            margin-right: 3px;
+            transition: background 0.2s ease;
         }
-        .tts-btn:active {
+        .tts-btn:hover {
             background: #2980b9;
         }
         .analysis-box {
-            background: #eef2f3;
-            border-left: 4px solid #2980b9;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .analysis-box ul {
-            margin: 5px 0 0 20px;
-            padding: 0;
+            background: #f0f7fb;
+            border-left: 4px solid #3498db;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            border-radius: 0 4px 4px 0;
         }
         .controls {
             text-align: center;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         button.main-btn {
             background: #27ae60;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 15px;
-            border-radius: 5px;
+            font-weight: 600;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            max-width: 280px;
+            max-width: 300px;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        button.main-btn:hover {
+            background: #219a52;
+        }
+        button.main-btn:active {
+            transform: scale(0.98);
         }
         button.main-btn.stop {
+            background: #e74c3c;
+        }
+        button.main-btn.stop:hover {
             background: #c0392b;
         }
         canvas {
             display: block;
-            margin: 10px auto;
+            margin: 15px auto;
             background: #111;
-            border-radius: 5px;
+            border-radius: 8px;
             width: 100%;
             max-width: 500px;
             height: 130px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         #status {
             text-align: center;
-            font-weight: bold;
-            color: #e67e22;
-            font-size: 13px;
+            font-weight: 600;
+            color: #d35400;
+            font-size: 14px;
+            margin-bottom: 5px;
         }
         .transcription-box {
-            background: #e8f8f5;
+            background: #f8fdfb;
             border: 1px solid #1abc9c;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-size: 16px;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 15px;
             color: #2c3e50;
-            text-align: center;
         }
         .phonetic-breakdown {
-            background: #fff;
+            background: #ffffff;
             border: 1px dashed #1abc9c;
-            padding: 10px;
-            margin-top: 10px;
+            padding: 15px;
+            margin-top: 15px;
             font-size: 14px;
             text-align: left;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         .phonetic-breakdown span.category {
             color: #2980b9;
-            font-weight: bold;
+            font-weight: 600;
         }
         .phonetic-breakdown span.sounds {
             color: #c0392b;
             font-weight: bold;
             font-size: 16px;
+        }
+        input[type="text"] {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            width: 250px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
     </style>
 </head>
@@ -320,6 +357,41 @@
         Firefox, or when the file is opened directly from local storage without a secure
         server.
     </p>
+
+    <!-- NEW DICTIONARY & TRANSLITERATION TOOL SECTION -->
+    <div class="chart-box" style="margin-top: 30px;">
+        <h2>4. Digital Dictionary & Grammatical Analysis Tool</h2>
+        
+        <div class="analysis-box">
+            <b>Supporting Digital Preservation & Language Tech:</b> Computational tools like digital dictionaries, morphological analyzers, and transliteration engines are crucial for the digital preservation of Sanskrit. They make complex grammatical structures accessible to global learners, allow ancient manuscripts to be indexed and searched computationally, and provide the foundational structured data required to train Natural Language Processing (NLP) and AI translation models for classical languages.
+        </div>
+        
+        <div style="text-align:center; margin-top: 15px;">
+            <label for="wordInput"><strong>Enter an English, Hindi, Marathi, or Sanskrit word:</strong></label><br>
+            <input type="text" id="wordInput" placeholder="e.g. योग, Dharma, शान्ति" style="padding:8px; margin-top:8px; font-size:14px; border-radius:4px; border:1px solid #ccc; width:220px;">
+            <button class="main-btn" style="width: auto; padding: 8px 15px; font-size: 14px; margin-left: 10px;" onclick="analyzeWord()">Analyze Word</button>
+        </div>
+
+        <div id="dictResult" class="transcription-box" style="display:none; text-align:left; margin-top: 15px; font-size:14px;">
+            <div id="offlineNotice" style="color:#e74c3c; font-size:12px; margin-bottom:10px; font-style:italic; display:none;">
+                *Detailed root/meaning not found in offline dictionary. Displaying script & phonetic analysis instead.*
+            </div>
+            <strong>Input Word:</strong> <span id="resInput" style="color:#2c3e50; font-weight:bold;"></span><br>
+            <strong>Script Detected:</strong> <span id="resScript" style="color:#16a085;"></span><br>
+            
+            <div id="dictData" style="margin-top:10px;">
+                <strong>Transliteration:</strong> <span id="resTrans" style="color:#e67e22;"></span><br>
+                <strong>Root (Dhātu):</strong> <span id="resRoot" style="color:#2980b9;"></span><br>
+                <strong>Meaning:</strong> <span id="resMeaning" style="color:#27ae60;"></span><br>
+                <strong>Grammatical Analysis:</strong> <span id="resGrammar" style="color:#8e44ad;"></span>
+            </div>
+            
+            <div id="phoneticData" style="margin-top:10px; padding-top:10px; border-top:1px dashed #1abc9c;">
+                <strong>Phonetic Reader Breakdown:</strong><br>
+                <span id="resPhonetics" style="color:#555;"></span>
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -610,6 +682,87 @@
         }
         canvasCtx.lineTo(canvas.width, canvas.height/2);
         canvasCtx.stroke();
+    }
+
+    // Dictionary & Transliteration Tool Logic
+    const sanskritDict = {
+        "योग": { trans: "yoga", root: "युज् (yuj) - to join or yoke", meaning: "Union, connection, practice, meditation", grammar: "Noun (Puṃliṅga/Masculine), Prathamā Vibhakti (Nominative)" },
+        "yoga": { trans: "yoga", root: "युज् (yuj) - to join or yoke", meaning: "Union, connection, practice, meditation", grammar: "Noun (Puṃliṅga/Masculine), Prathamā Vibhakti (Nominative)" },
+        "धर्म": { trans: "dharma", root: "धृ (dhṛ) - to uphold, support", meaning: "Righteousness, duty, cosmic law", grammar: "Noun (Puṃliṅga/Masculine), Prathamā Vibhakti (Nominative)" },
+        "dharma": { trans: "dharma", root: "धृ (dhṛ) - to uphold, support", meaning: "Righteousness, duty, cosmic law", grammar: "Noun (Puṃliṅga/Masculine), Prathamā Vibhakti (Nominative)" },
+        "कर्म": { trans: "karman", root: "कृ (kṛ) - to do, make", meaning: "Action, work, deed", grammar: "Noun (Napuṃsakaliṅga/Neuter), Prathamā/Dvitīyā Vibhakti" },
+        "karma": { trans: "karman", root: "कृ (kṛ) - to do, make", meaning: "Action, work, deed", grammar: "Noun (Napuṃsakaliṅga/Neuter), Prathamā/Dvitīyā Vibhakti" },
+        "ज्ञान": { trans: "jñāna", root: "ज्ञा (jñā) - to know", meaning: "Knowledge, wisdom, awareness", grammar: "Noun (Napuṃsakaliṅga/Neuter), Prathamā Vibhakti" },
+        "jnana": { trans: "jñāna", root: "ज्ञा (jñā) - to know", meaning: "Knowledge, wisdom, awareness", grammar: "Noun (Napuṃsakaliṅga/Neuter), Prathamā Vibhakti" },
+        "विद्या": { trans: "vidyā", root: "विद् (vid) - to know", meaning: "Learning, science, philosophy", grammar: "Noun (Strīliṅga/Feminine), Prathamā Vibhakti" },
+        "vidya": { trans: "vidyā", root: "विद् (vid) - to know", meaning: "Learning, science, philosophy", grammar: "Noun (Strīliṅga/Feminine), Prathamā Vibhakti" },
+        "संस्कृत": { trans: "saṃskṛta", root: "सम् (sam) + कृ (kṛ) - well put together", meaning: "Perfected, refined, cultivated (Language)", grammar: "Adjective / Noun (Napuṃsakaliṅga), Past Passive Participle" },
+        "sanskrit": { trans: "saṃskṛta", root: "सम् (sam) + कृ (kṛ) - well put together", meaning: "Perfected, refined, cultivated (Language)", grammar: "Adjective / Noun (Napuṃsakaliṅga), Past Passive Participle" },
+        "शान्ति": { trans: "śānti", root: "शम् (śam) - to be calm", meaning: "Peace, tranquility", grammar: "Noun (Strīliṅga/Feminine)" },
+        "shanti": { trans: "śānti", root: "शम् (śam) - to be calm", meaning: "Peace, tranquility", grammar: "Noun (Strīliṅga/Feminine)" }
+    };
+
+    function getPhoneticBreakdown(text) {
+        let vowels = text.match(/[अआइईउऊऋॠएऐओऔािीुूृेैोौaouie]/gi) || [];
+        let guttural = text.match(/[कखगघङkgh]/gi) || [];
+        let palatal = text.match(/[चछजझञcj]/gi) || [];
+        let retroflex = text.match(/[टठडढणṭḍṇ]/gi) || [];
+        let dental = text.match(/[तथदधनtdn]/gi) || [];
+        let labial = text.match(/[पफबभमpbmfv]/gi) || [];
+        let semivowels = text.match(/[यरलवyrlw]/gi) || [];
+        let sibilants = text.match(/[शषसहsṣśh]/gi) || [];
+
+        const getUnique = (arr) => [...new Set(arr)].join(', ');
+
+        let html = "";
+        if(vowels.length) html += `<b>Swara (Vowels):</b> <span style="color:#c0392b;">${getUnique(vowels)}</span><br>`;
+        if(guttural.length) html += `<b>Kanthya (Guttural):</b> <span style="color:#c0392b;">${getUnique(guttural)}</span><br>`;
+        if(palatal.length) html += `<b>Talavya (Palatal):</b> <span style="color:#c0392b;">${getUnique(palatal)}</span><br>`;
+        if(retroflex.length) html += `<b>Murdhanya (Retroflex):</b> <span style="color:#c0392b;">${getUnique(retroflex)}</span><br>`;
+        if(dental.length) html += `<b>Dantya (Dental):</b> <span style="color:#c0392b;">${getUnique(dental)}</span><br>`;
+        if(labial.length) html += `<b>Oshthya (Labial):</b> <span style="color:#c0392b;">${getUnique(labial)}</span><br>`;
+        if(semivowels.length) html += `<b>Antaḥsthā (Semivowels):</b> <span style="color:#c0392b;">${getUnique(semivowels)}</span><br>`;
+        if(sibilants.length) html += `<b>Ūṣman (Sibilants):</b> <span style="color:#c0392b;">${getUnique(sibilants)}</span><br>`;
+
+        return html || "<em>No standard Sanskrit phonemes detected.</em>";
+    }
+
+    function analyzeWord() {
+        const rawWord = document.getElementById("wordInput").value.trim();
+        const resBox = document.getElementById("dictResult");
+        
+        if(!rawWord) {
+            resBox.style.display = "none";
+            return;
+        }
+        
+        const searchWord = rawWord.toLowerCase();
+        document.getElementById("resInput").innerText = rawWord;
+        
+        // Script detection
+        const isDevanagari = /[\u0900-\u097F]/.test(rawWord);
+        document.getElementById("resScript").innerText = isDevanagari ? "Devanagari (Sanskrit / Hindi / Marathi)" : "Latin (English / IAST)";
+        
+        const data = sanskritDict[searchWord];
+        const dictDataBox = document.getElementById("dictData");
+        const offlineNotice = document.getElementById("offlineNotice");
+        
+        if(data) {
+            offlineNotice.style.display = "none";
+            dictDataBox.style.display = "block";
+            document.getElementById("resTrans").innerText = data.trans;
+            document.getElementById("resRoot").innerText = data.root;
+            document.getElementById("resMeaning").innerText = data.meaning;
+            document.getElementById("resGrammar").innerText = data.grammar;
+        } else {
+            offlineNotice.style.display = "block";
+            dictDataBox.style.display = "none";
+        }
+        
+        // Always show phonetic breakdown
+        document.getElementById("resPhonetics").innerHTML = getPhoneticBreakdown(rawWord);
+        
+        resBox.style.display = "block";
     }
 </script>
 
